@@ -1,0 +1,81 @@
+import React, {useEffect} from 'react';
+import {observer} from "mobx-react-lite";
+import FigureComponent from "./Figure";
+import FieldPoint from "./FieldPoint";
+import Game from "../store/game";
+import {canMove} from "../helpers/figureCheck";
+import {vectors} from "../constants";
+
+const Field = observer(({height = 1000, width = 500}) => {
+    const move = (e) => {
+        switch (e.key) {
+
+            case "ArrowLeft":  // если нажата клавиша влево
+                if (canMove(vectors.LEFT, Game.currentFigure).isCan)
+                    Game.changeCurrentFigure(Game.currentFigure.x - 1, Game.currentFigure.y);
+                break;
+            case "ArrowTop":   // если нажата клавиша вверх
+                // if(top>0)
+                //     blueRect.style.marginTop = top - 10 + "px";
+                break;
+            case "ArrowRight":   // если нажата клавиша вправо
+                if (canMove(vectors.RIGHT, Game.currentFigure).isCan)
+                    Game.changeCurrentFigure(Game.currentFigure.x + 1, Game.currentFigure.y);
+                break;
+            case "ArrowDown":   // если нажа
+                const can = canMove(vectors.DOWN, Game.currentFigure);
+                if (can.isCan)
+                    Game.changeCurrentFigure(Game.currentFigure.x, Game.currentFigure.y + 1);
+                // else if (can.shouldToStop) {
+                //     Game.addFigure(Figure);
+                //     Figure.changeCoord(0, 0);
+                // }
+
+                break;
+        }
+    }
+
+
+
+    const intervalMove = () => {
+        const can = canMove(vectors.DOWN, Game.currentFigure);
+        if (can.isCan)
+            Game.changeCurrentFigure(Game.currentFigure.x, Game.currentFigure.y + 1);
+        else if (can.shouldToStop) {
+            Game.addFigure(Game.currentFigure);
+            Game.changeCurrentFigure(0, 0);
+        }
+    };
+
+    useEffect(() => {
+        const interval = setInterval(intervalMove, 1000);
+
+        document.addEventListener("keydown", move);
+
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener("keydown", move);
+        }
+    }, []);
+
+    return (
+        <>
+            <div className={'field-wrp'}>
+                <FigureComponent/>
+                {Game.figures.map(f => (
+                    <FieldPoint key={f.id} x={f.x} y={f.y}/>
+                ))}
+            </div>
+            <style jsx>{`
+              .field-wrp {
+                position: relative;
+                height: ${height}px;
+                width: ${width}px;
+                border: 4px solid #61dafb;
+              }
+            `}</style>
+        </>
+    );
+});
+
+export default Field;
