@@ -5,3 +5,8 @@ export const vectors = {
     RIGHT: 'right',
     DOWN: 'down'
 }
+
+export const fieldParams = {
+    height: 20,
+    width: 10
+}

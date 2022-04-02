@@ -13,7 +13,8 @@ const Header = observer(({type}) => {
                 <img src={logo} className="App-logo" alt="logo"/>
                 <p>
                     <code>Tetris</code>
-                    {Game.figures.length}
+                    <div>Done figures: {Game.figures.length}</div>
+                    <div>Score: {Game.score}</div>
                 </p>
             </header>
             <style jsx>{`

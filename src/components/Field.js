@@ -44,11 +44,12 @@ const Field = observer(({height = 1000, width = 500}) => {
         else if (can.shouldToStop) {
             Game.addFigure(Game.currentFigure);
             Game.changeCurrentFigure(0, 0);
+            Game.checkFilledRow();
         }
     };
 
     useEffect(() => {
-        const interval = setInterval(intervalMove, 1000);
+        const interval = setInterval(intervalMove, 500);
 
         document.addEventListener("keydown", move);
 
@@ -62,8 +63,8 @@ const Field = observer(({height = 1000, width = 500}) => {
         <>
             <div className={'field-wrp'}>
                 <FigureComponent/>
-                {Game.figures.map(f => (
-                    <FieldPoint key={f.id} x={f.x} y={f.y}/>
+                {Game.field.map(p => (
+                    <FieldPoint key={p.id} x={p.x} y={p.y} color={p.value ? 'gray' : 'transparent'}/>
                 ))}
             </div>
             <style jsx>{`
