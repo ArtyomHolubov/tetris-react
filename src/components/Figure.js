@@ -7,7 +7,7 @@ const Figure = observer(({type}) => {
     return (
         <>
             <div className={'figure-wrp'} >
-                {Game.currentFigure.coords.map(p => (
+                {Game.currentFigure.coords.filter(c => c.filled).map(p => (
                     <FieldPoint key={p.y.toString() + p.x.toString()} x={p.x} y={p.y} color={'red'}/>
                 ))}
             </div>

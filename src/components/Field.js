@@ -4,7 +4,9 @@ import FigureComponent from "./Figure";
 import FieldPoint from "./FieldPoint";
 import Game from "../store/game";
 import {canMove} from "../helpers/figureCheck";
-import {figureTypes, startPosition, vectors} from "../constants";
+import {vectors} from "../constants";
+import {FigureCreator} from "../helpers/figureCreator";
+import {runInAction} from "mobx";
 
 const Field = observer(({height = 1000, width = 500}) => {
     const move = (e) => {
@@ -36,15 +38,16 @@ const Field = observer(({height = 1000, width = 500}) => {
     }
 
 
-
     const intervalMove = () => {
         const can = canMove(vectors.DOWN, Game.currentFigure);
         if (can.isCan)
-            Game.changeCurrentFigure(Game.currentFigure.x, Game.currentFigure.y + 1, figureTypes.square);
+            Game.changeCurrentFigure(Game.currentFigure.x, Game.currentFigure.y + 1);
         else if (can.shouldToStop) {
             Game.addFigure(Game.currentFigure);
-            Game.changeCurrentFigure(startPosition.x, startPosition.y, figureTypes.square);
             Game.checkFilledRow();
+            runInAction(() => {
+                Game.currentFigure = FigureCreator.create();
+            })
         }
     };
 

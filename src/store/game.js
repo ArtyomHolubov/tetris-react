@@ -1,36 +1,16 @@
 import {makeAutoObservable} from "mobx";
-import {fieldParams, figureTypes, startPosition} from "../constants";
+import {fieldParams} from "../constants";
+import {FigureCreator} from "../helpers/figureCreator";
 
 class Game {
     field = [];
     figures = [];
     score = 0;
-    currentFigure = {
-        x: startPosition.x,
-        y: startPosition.y,
-        type: figureTypes.square,
-        coords: [
-            {
-                x: startPosition.x,
-                y: startPosition.y
-            },
-            {
-                x: startPosition.x + 1,
-                y: startPosition.y
-            },
-            {
-                x: startPosition.x + 1,
-                y: startPosition.y + 1
-            },
-            {
-                x: startPosition.x,
-                y: startPosition.y + 1
-            }
-        ]
-    };
 
     constructor() {
+        this.currentFigure = FigureCreator.create();
         makeAutoObservable(this);
+
 
         for (let y = 0; y < fieldParams.height; y++) {
             for (let x = 0; x < fieldParams.width; x++) {
@@ -42,38 +22,25 @@ class Game {
         }
     }
 
+    rotateCurrentFigure() {
+        //
+    }
+
     changeCurrentFigure(x, y, type) {
+        const xOffset = this.currentFigure.x - x;
+        const yOffset = this.currentFigure.y - y;
+
         this.currentFigure.x = x;
         this.currentFigure.y = y;
-
-        if (type) this.currentFigure.type = type;
-
-        switch (this.currentFigure.type) {
-            case figureTypes.square:
-                this.currentFigure.coords = [
-                    {
-                        x: x,
-                        y: y
-                    },
-                    {
-                        x: x + 1,
-                        y: y
-                    },
-                    {
-                        x: x + 1,
-                        y: y + 1
-                    },
-                    {
-                        x: x,
-                        y: y + 1
-                    }
-                ]
-        }
+        this.currentFigure.coords.forEach(c => {
+            c.x -= xOffset;
+            c.y -= yOffset;
+        });
     }
 
     addFigure(figure) {
         this.figures.push({...figure});
-        const points = this.field.filter(p => figure.coords.some(c => p.x === c.x && c.y === p.y));
+        const points = this.field.filter(p => figure.coords.some(c => p.x === c.x && c.y === p.y && c.filled));
         points.forEach(p => p.value = true);
     }
 

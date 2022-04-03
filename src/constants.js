@@ -18,5 +18,5 @@ export const figureTypes = {
 
 export const startPosition = {
     x: 4,
-    y: 0
+    y: 1
 }
