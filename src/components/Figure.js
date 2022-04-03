@@ -1,22 +1,19 @@
 import React from 'react';
 import {observer} from "mobx-react-lite";
 import Game from "../store/game";
-import {step} from "../constants";
+import FieldPoint from "./FieldPoint";
 
 const Figure = observer(({type}) => {
-    const {x, y} = Game.currentFigure;
-
     return (
         <>
-            <div className={'figure-wrp'} />
+            <div className={'figure-wrp'} >
+                {Game.currentFigure.coords.map(p => (
+                    <FieldPoint key={p.y.toString() + p.x.toString()} x={p.x} y={p.y} color={'red'}/>
+                ))}
+            </div>
             <style jsx>{`
               .figure-wrp {
-                position: absolute;
-                left: ${x * step}px;
-                top: ${y* step}px;
-                height: 50px;
-                width: 50px;
-                background-color: red;
+                
               }
             `}</style>
         </>

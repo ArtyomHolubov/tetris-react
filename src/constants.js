@@ -10,3 +10,13 @@ export const fieldParams = {
     height: 20,
     width: 10
 }
+
+export const figureTypes = {
+    square: 'square',
+    stick: 'stick'
+}
+
+export const startPosition = {
+    x: 4,
+    y: 0
+}

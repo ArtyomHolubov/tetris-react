@@ -4,7 +4,7 @@ import FigureComponent from "./Figure";
 import FieldPoint from "./FieldPoint";
 import Game from "../store/game";
 import {canMove} from "../helpers/figureCheck";
-import {vectors} from "../constants";
+import {figureTypes, startPosition, vectors} from "../constants";
 
 const Field = observer(({height = 1000, width = 500}) => {
     const move = (e) => {
@@ -40,10 +40,10 @@ const Field = observer(({height = 1000, width = 500}) => {
     const intervalMove = () => {
         const can = canMove(vectors.DOWN, Game.currentFigure);
         if (can.isCan)
-            Game.changeCurrentFigure(Game.currentFigure.x, Game.currentFigure.y + 1);
+            Game.changeCurrentFigure(Game.currentFigure.x, Game.currentFigure.y + 1, figureTypes.square);
         else if (can.shouldToStop) {
             Game.addFigure(Game.currentFigure);
-            Game.changeCurrentFigure(0, 0);
+            Game.changeCurrentFigure(startPosition.x, startPosition.y, figureTypes.square);
             Game.checkFilledRow();
         }
     };

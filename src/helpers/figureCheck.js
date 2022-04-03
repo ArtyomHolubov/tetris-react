@@ -3,26 +3,24 @@ import Game from "../store/game";
 
 const checkFieldIntersection = (figure, vector) => {
     const {field} = Game;
-    let point;
+    let points = [];
     let shouldToStop = false;
-
-    const {x, y} = figure;
 
     switch (vector) {
         case vectors.LEFT:
-            point = field.find(p => p.x === x - 1 && p.y === y && !p.value);
+            points = field.filter(p => figure.coords.some(c => p.x === c.x - 1 && c.y === p.y && !p.value));
             break;
         case vectors.RIGHT:
-            point = field.find(p => p.x === x + 1 && p.y === y && !p.value);
+            points = field.filter(p => figure.coords.some(c => p.x === c.x + 1 && c.y === p.y && !p.value));
             break;
         case vectors.DOWN:
-            point = field.find(p => p.x === x && p.y === y + 1 && !p.value);
-            if (!point)
+            points = field.filter(p => figure.coords.some(c => p.x === c.x && c.y + 1 === p.y && !p.value));
+            if (points.length !== figure.coords.length)
                 shouldToStop = true;
             break;
     }
 
-    return {isCan: !!point, shouldToStop: shouldToStop};
+    return {isCan: points.length === figure.coords.length, shouldToStop: shouldToStop};
 }
 
 export const canMove = (moveType, figure) => {

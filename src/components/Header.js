@@ -1,6 +1,5 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
-import FigureStore from "../store/figure";
 import Game from "../store/game";
 import logo from "../logo.svg";
 

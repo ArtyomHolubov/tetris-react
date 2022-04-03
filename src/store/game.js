@@ -1,14 +1,32 @@
 import {makeAutoObservable} from "mobx";
-import {fieldParams} from "../constants";
+import {fieldParams, figureTypes, startPosition} from "../constants";
 
 class Game {
     field = [];
     figures = [];
     score = 0;
     currentFigure = {
-        x: 0,
-        y: 0,
-        coords: []
+        x: startPosition.x,
+        y: startPosition.y,
+        type: figureTypes.square,
+        coords: [
+            {
+                x: startPosition.x,
+                y: startPosition.y
+            },
+            {
+                x: startPosition.x + 1,
+                y: startPosition.y
+            },
+            {
+                x: startPosition.x + 1,
+                y: startPosition.y + 1
+            },
+            {
+                x: startPosition.x,
+                y: startPosition.y + 1
+            }
+        ]
     };
 
     constructor() {
@@ -24,15 +42,39 @@ class Game {
         }
     }
 
-    changeCurrentFigure(x, y) {
+    changeCurrentFigure(x, y, type) {
         this.currentFigure.x = x;
         this.currentFigure.y = y;
+
+        if (type) this.currentFigure.type = type;
+
+        switch (this.currentFigure.type) {
+            case figureTypes.square:
+                this.currentFigure.coords = [
+                    {
+                        x: x,
+                        y: y
+                    },
+                    {
+                        x: x + 1,
+                        y: y
+                    },
+                    {
+                        x: x + 1,
+                        y: y + 1
+                    },
+                    {
+                        x: x,
+                        y: y + 1
+                    }
+                ]
+        }
     }
 
     addFigure(figure) {
         this.figures.push({...figure});
-        const point = this.field.find(p => p.x === figure.x && p.y === figure.y);
-        point.value = true;
+        const points = this.field.filter(p => figure.coords.some(c => p.x === c.x && c.y === p.y));
+        points.forEach(p => p.value = true);
     }
 
     checkFilledRow() {
