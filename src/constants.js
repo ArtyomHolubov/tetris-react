@@ -21,3 +21,5 @@ export const startPosition = {
     x: 4,
     y: 1
 }
+
+export const gameSpeed = 500;

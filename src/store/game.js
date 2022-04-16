@@ -7,6 +7,7 @@ class Game {
     field = [];
     figures = [];
     score = 0;
+    animation = true;
 
     constructor() {
         this.currentFigure = FigureCreator.create(startPosition.x, startPosition.y);

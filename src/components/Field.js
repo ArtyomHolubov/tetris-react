@@ -4,7 +4,7 @@ import FigureComponent from "./Figure";
 import FieldPoint from "./FieldPoint";
 import Game from "../store/game";
 import {canMove} from "../helpers/figureCheck";
-import {startPosition, vectors} from "../constants";
+import {gameSpeed, startPosition, vectors} from "../constants";
 import {FigureCreator} from "../helpers/figureCreator";
 import {runInAction} from "mobx";
 
@@ -12,7 +12,7 @@ const Field = observer(({height = 1000, width = 500}) => {
     console.log('render Field');
 
     useEffect(() => {
-        const interval = setInterval(() => changeCurrentFigure(vectors.DOWN), 500);
+        const interval = setInterval(() => changeCurrentFigure(vectors.DOWN), gameSpeed);
 
         document.addEventListener("keydown", move);
 
@@ -70,6 +70,7 @@ const Field = observer(({height = 1000, width = 500}) => {
             <div className={'field-wrp'}>
                 <FigureComponent/>
                 {Game.field.map(p => (
+                    p.value &&
                     <FieldPoint key={p.id} id={p.id} x={p.x} y={p.y} color={p.value ? 'gray' : 'transparent'}/>
                 ))}
             </div>
@@ -79,6 +80,26 @@ const Field = observer(({height = 1000, width = 500}) => {
                 height: ${height}px;
                 width: ${width}px;
                 border: 4px solid #61dafb;
+              }
+
+              .field-point-wrp {
+                position: absolute;
+                height: 50px;
+                width: 50px;
+                transition: all 100ms linear;
+              }
+
+              @keyframes rollout {
+                0% {
+                  transform: translateY(-50px);
+                }
+                100% {
+                  transform: translateY(0);
+                }
+              }
+
+              .roll-out {
+                animation: ${gameSpeed}ms linear rollout;
               }
             `}</style>
         </>
