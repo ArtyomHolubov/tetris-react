@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
-import {fieldParams} from "../constants";
+import {fieldParams, startPosition, vectors} from "../constants";
 import {FigureCreator} from "../helpers/figureCreator";
+import {checkFieldIntersection} from "../helpers/figureCheck";
 
 class Game {
     field = [];
@@ -8,22 +9,16 @@ class Game {
     score = 0;
 
     constructor() {
-        this.currentFigure = FigureCreator.create();
+        this.currentFigure = FigureCreator.create(startPosition.x, startPosition.y);
         makeAutoObservable(this);
 
 
         for (let y = 0; y < fieldParams.height; y++) {
             for (let x = 0; x < fieldParams.width; x++) {
                 const id = y.toString() + x.toString();
-                // eslint-disable-next-line no-console
-                // console.log('id', id);
                 this.field.push({id, x, y, value: false});
             }
         }
-    }
-
-    rotateCurrentFigure() {
-        //
     }
 
     changeCurrentFigure(x, y, type) {
@@ -36,6 +31,16 @@ class Game {
             c.x -= xOffset;
             c.y -= yOffset;
         });
+    }
+
+    async rotateCurrentFigure() {
+        const { rotateState, rotateStates, getRotateCoords } = this.currentFigure;
+        const resultRotateState = rotateStates - 1 - rotateState ? rotateState + 1 : 0;
+        const figureForCheck = { coords: getRotateCoords(resultRotateState) };
+        if (checkFieldIntersection(figureForCheck, vectors.UP).isCan) {
+            this.currentFigure.rotateState = resultRotateState;
+            this.currentFigure.coords = getRotateCoords(resultRotateState);
+        }
     }
 
     addFigure(figure) {

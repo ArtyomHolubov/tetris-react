@@ -1,7 +1,7 @@
 import React from 'react';
 import {step} from "../constants";
 
-const FieldPoint = ({x, y, type, color = 'gray'}) => (
+const FieldPoint = ({x, y, id, color = 'gray'}) => (
     <>
         <div className={`field-point-wrp`} style={{
             left: `${x * step}px`,
@@ -13,6 +13,7 @@ const FieldPoint = ({x, y, type, color = 'gray'}) => (
             position: absolute;
             height: 50px;
             width: 50px;
+            transition: all 100ms linear;
           }
         `}</style>
     </>

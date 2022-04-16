@@ -6,14 +6,15 @@ import FieldPoint from "./FieldPoint";
 const Figure = observer(({type}) => {
     return (
         <>
-            <div className={'figure-wrp'} >
-                {Game.currentFigure.coords.filter(c => c.filled).map(p => (
-                    <FieldPoint key={p.y.toString() + p.x.toString()} x={p.x} y={p.y} color={'red'}/>
+            <div className={'figure-wrp'}>
+                {Game.currentFigure.coords.map(p => (
+                    <FieldPoint key={p.y.toString() + p.x.toString()} id={p.y.toString() + p.x.toString()} x={p.x}
+                                y={p.y} color={p.filled ? 'red' : '#4c4c4c'}/>
                 ))}
             </div>
             <style jsx>{`
               .figure-wrp {
-                
+
               }
             `}</style>
         </>

@@ -1,7 +1,7 @@
 import {figureTypes, vectors} from "../constants";
 import Game from "../store/game";
 
-const checkFieldIntersection = (figure, vector) => {
+export const checkFieldIntersection = (figure, vector) => {
     const {field} = Game;
     let points = [];
     let shouldToStop = false;
@@ -17,6 +17,9 @@ const checkFieldIntersection = (figure, vector) => {
             points = field.filter(p => figure.coords.some(c => c.filled && p.x === c.x && c.y + 1 === p.y && !p.value));
             if (points.length !== figure.coords.filter(c => c.filled).length)
                 shouldToStop = true;
+            break;
+        case vectors.UP:
+            points = field.filter(p => figure.coords.some(c => c.filled && p.x === c.x && c.y === p.y && !p.value));
             break;
     }
 
