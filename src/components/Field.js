@@ -4,11 +4,11 @@ import FigureComponent from "./Figure";
 import FieldPoint from "./FieldPoint";
 import Game from "../store/game";
 import {canMove} from "../helpers/figureCheck";
-import {gameSpeed, startPosition, vectors} from "../constants";
+import {gameSpeed, layoutParams, startPosition, step, vectors} from "../constants";
 import {FigureCreator} from "../helpers/figureCreator";
 import {runInAction} from "mobx";
 
-const Field = observer(({height = 1000, width = 500}) => {
+const Field = observer(() => {
     console.log('render Field');
 
     useEffect(() => {
@@ -77,16 +77,21 @@ const Field = observer(({height = 1000, width = 500}) => {
             <style jsx>{`
               .field-wrp {
                 position: relative;
-                height: ${height}px;
-                width: ${width}px;
+                height: ${layoutParams.height}px;
+                width: ${layoutParams.width}px;
                 border: 4px solid #61dafb;
               }
 
               .field-point-wrp {
                 position: absolute;
-                height: 50px;
-                width: 50px;
+                height: ${step - Game.padding * 2}px;
+                width: ${step - Game.padding * 2}px;
                 transition: all 100ms linear;
+              }
+
+              .field-point {
+                height: 100%;
+                width: 100%;
               }
 
               @keyframes rollout {

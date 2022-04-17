@@ -1,4 +1,5 @@
 export const step = 50;
+export const padding = 4;
 
 export const vectors = {
     LEFT: 'left',
@@ -23,3 +24,8 @@ export const startPosition = {
 }
 
 export const gameSpeed = 500;
+
+export const layoutParams = {
+    height: 1000,
+    width: 500
+}
