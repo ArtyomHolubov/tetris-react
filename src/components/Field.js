@@ -1,26 +1,63 @@
 import React, {useEffect} from 'react';
 import {observer} from "mobx-react-lite";
+import {runInAction} from "mobx";
 import FigureComponent from "./Figure";
 import FieldPoint from "./FieldPoint";
 import Game from "../store/game";
 import {canMove} from "../helpers/figureCheck";
-import {gameSpeed, layoutParams, startPosition, step, vectors} from "../constants";
+import {colors, gameSpeed, layoutParams, startPosition, step, vectors} from "../constants";
 import {FigureCreator} from "../helpers/figureCreator";
-import {runInAction} from "mobx";
+import {delay} from "../helpers/utils";
+
+let theInterval = 0;
 
 const Field = observer(() => {
     console.log('render Field');
 
     useEffect(() => {
-        const interval = setInterval(() => changeCurrentFigure(vectors.DOWN), gameSpeed);
+        runGame();
 
         document.addEventListener("keydown", move);
 
         return () => {
-            clearInterval(interval);
+            stopGame(theInterval);
             document.removeEventListener("keydown", move);
         }
     }, []);
+
+    const runGame = () => theInterval = setInterval(() => changeCurrentFigure(vectors.DOWN), gameSpeed)
+    const stopGame = interval => clearInterval(interval)
+
+    const deleteRows = async rows => {
+        if (!rows.length) return;
+        stopGame(theInterval);
+
+        await lightingRows(rows);
+
+        rows.forEach(row => Game.deleteRow(row));
+        runGame();
+    };
+
+    const changeRowsValue = (rows, value) => {
+        rows.forEach(row => {
+            Game.field.forEach(f => {
+                if (f.y === row)
+                    f.value = value;
+            })
+        });
+    };
+
+    const lightingRows = async rows => {
+        for (let i = 0; i < 2; i++) {
+            changeRowsValue(rows, 2);
+
+            await delay(100);
+
+            changeRowsValue(rows, 1);
+
+            await delay(100);
+        }
+    }
 
     const move = (e) => {
         switch (e.key) {
@@ -58,10 +95,19 @@ const Field = observer(() => {
                     Game.changeCurrentFigure(Game.currentFigure.x, Game.currentFigure.y + 1);
                 else if (can.shouldToStop) {
                     Game.addFigure(Game.currentFigure);
-                    Game.checkFilledRow();
+                    const rowsForDelete = Game.checkFilledRow();
+                    deleteRows(rowsForDelete);
                     Game.currentFigure = FigureCreator.create(startPosition.x, startPosition.y);
                 }
                 break;
+        }
+    }
+
+    const getFieldPointColor = p => {
+        switch (p.value) {
+            case 0: return 'transparent';
+            case 1: return 'gray';
+            case 2: return 'white';
         }
     }
 
@@ -70,8 +116,8 @@ const Field = observer(() => {
             <div className={'field-wrp'}>
                 <FigureComponent/>
                 {Game.field.map(p => (
-                    p.value &&
-                    <FieldPoint key={p.id} id={p.id} x={p.x} y={p.y} color={p.value ? 'gray' : 'transparent'}/>
+                    p.value > 0 &&
+                    <FieldPoint key={p.id} id={p.id} x={p.x} y={p.y} color={getFieldPointColor(p)}/>
                 ))}
             </div>
             <style jsx>{`
@@ -79,7 +125,7 @@ const Field = observer(() => {
                 position: relative;
                 height: ${layoutParams.height}px;
                 width: ${layoutParams.width}px;
-                border: 4px solid #61dafb;
+                border: 4px solid ${colors.fieldBorderColor};
               }
 
               .field-point-wrp {

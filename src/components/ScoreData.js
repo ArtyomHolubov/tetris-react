@@ -3,14 +3,14 @@ import {observer} from "mobx-react-lite";
 import Game from "../store/game";
 import logo from "../logo.svg";
 
-// TODO remove component ?
-const Header = observer(() => {
+const ScoreData = observer(() => {
     return (
         <>
             <header className="app-header">
-                <img src={logo} className="App-logo" alt="logo"/>
+                {/*<img src={logo} className="App-logo" alt="logo"/>*/}
                 <p>
                     <code>Tetris</code>
+                    <br/>
                     <div>Done figures: {Game.figures.length}</div>
                     <div>Score: {Game.score}</div>
                 </p>
@@ -25,4 +25,4 @@ const Header = observer(() => {
     );
 });
 
-export default Header;
+export default ScoreData;

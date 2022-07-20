@@ -1,6 +1,6 @@
 import React from 'react';
 import {observer} from "mobx-react-lite";
-import {layoutParams} from "../constants";
+import {colors, layoutParams} from "../constants";
 
 const SettingsField = observer(({children}) => {
     return (
@@ -13,7 +13,7 @@ const SettingsField = observer(({children}) => {
                 position: relative;
                 height: ${layoutParams.height - 20}px;
                 width: ${layoutParams.width / 1.5 - 20}px;
-                border: 4px solid #61dafb;
+                border: 4px solid ${colors.fieldBorderColor};
                 margin: 0 20px;
                 padding: 10px;
               }

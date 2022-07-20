@@ -7,7 +7,7 @@ class Game {
     field = [];
     figures = [];
     score = 0;
-    animation = true;
+    animation = false;
     padding = 4;
 
     constructor() {
@@ -18,7 +18,7 @@ class Game {
         for (let y = 0; y < fieldParams.height; y++) {
             for (let x = 0; x < fieldParams.width; x++) {
                 const id = y.toString() + x.toString();
-                this.field.push({id, x, y, value: false});
+                this.field.push({id, x, y, value: 0});
             }
         }
     }
@@ -48,25 +48,26 @@ class Game {
     addFigure(figure) {
         this.figures.push({...figure});
         const points = this.field.filter(p => figure.coords.some(c => p.x === c.x && c.y === p.y && c.filled));
-        points.forEach(p => p.value = true);
+        points.forEach(p => p.value = 1);
     }
 
     checkFilledRow() {
-        let filledRowIndex = -1;
+        const rowsForDelete = [];
 
         for (let i = 0; i < fieldParams.height; i++) {
             if (this.field.filter(p => p.y === i && p.value).length === fieldParams.width) {
-                filledRowIndex = i;
-                this.deleteRow(filledRowIndex);
+                rowsForDelete.push(i)
             }
         }
+
+        return rowsForDelete;
     }
 
     deleteRow(index) {
         const previousField = this.field.map(p => ({...p}));
 
         this.field.forEach(p => {
-            if (p.y === 0) p.value = false
+            if (p.y === 0) p.value = 0
             else if (p.y <= index) {
                 const upperPoint = previousField.find(up => up.y === p.y - 1 && up.x === p.x);
                 p.value = upperPoint.value;

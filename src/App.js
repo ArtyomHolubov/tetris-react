@@ -2,10 +2,10 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import Game from "./store/game";
 import Field from "./components/Field";
-import Header from "./components/Header";
 import SettingsField from "./components/SettingsField";
 import Checkbox from "./components/Checkbox";
 import InputNumber from "./components/InputNumber";
+import ScoreData from "./components/ScoreData";
 import './App.css';
 
 function App() {
@@ -19,9 +19,10 @@ function App() {
 
     return (
         <div className="App">
-            <Header/>
+            <br/>
             <div className={'game-wrp'}>
                 <SettingsField>
+                    <ScoreData />
                     <Checkbox label={'Animation'} value={Game.animation} onChange={handleToggleAnimation} />
                     <InputNumber label={'Padding'} value={Game.padding} onChange={handleChangePadding} />
                 </SettingsField>
