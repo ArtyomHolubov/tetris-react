@@ -17,11 +17,11 @@ const Field = observer(() => {
     useEffect(() => {
         runGame();
 
-        document.addEventListener("keydown", move);
+        document.addEventListener("keydown", keydown);
 
         return () => {
             stopGame();
-            document.removeEventListener("keydown", move);
+            document.removeEventListener("keydown", keydown);
         }
     }, []);
 
@@ -35,7 +35,7 @@ const Field = observer(() => {
         await lightingRows(rows);
 
         rows.forEach(row => Game.deleteRow(row));
-        runGame();
+        if (!Game.isPause) runGame();
     };
 
     const changeRowsValue = (rows, value) => {
@@ -59,7 +59,20 @@ const Field = observer(() => {
         }
     }
 
-    const move = (e) => {
+    const keydown = (e) => {
+        if (e.key === 'Enter') {
+            if (Game.isPause) runGame();
+            else stopGame();
+            if (Game.isGameOver) {
+                Game.isGameOver = false;
+                Game.init();
+                runGame();
+            }
+            else Game.isPause = !Game.isPause;
+        }
+
+        if (Game.isPause) return;
+
         switch (e.key) {
             case "ArrowLeft":  // если нажата клавиша влево
                 changeCurrentFigure(vectors.LEFT);
@@ -72,11 +85,6 @@ const Field = observer(() => {
                 break;
             case "ArrowDown":
                 changeCurrentFigure(vectors.DOWN);
-                break;
-            case "Enter":
-                if (Game.isPause) runGame();
-                else stopGame();
-                Game.isPause = !Game.isPause;
                 break;
         }
     }
@@ -99,10 +107,15 @@ const Field = observer(() => {
                 if (can.isCan)
                     Game.changeCurrentFigure(Game.currentFigure.x, Game.currentFigure.y + 1);
                 else if (can.shouldToStop) {
-                    Game.addFigure(Game.currentFigure);
-                    const rowsForDelete = Game.checkFilledRow();
-                    deleteRows(rowsForDelete);
-                    Game.currentFigure = FigureCreator.create(startPosition.x, startPosition.y);
+                    if (Game.checkStopGame(Game.currentFigure)) {
+                        stopGame();
+                        Game.isGameOver = true;
+                    } else {
+                        Game.addFigure(Game.currentFigure);
+                        const rowsForDelete = Game.checkFilledRow();
+                        deleteRows(rowsForDelete);
+                        Game.currentFigure = FigureCreator.create(startPosition.x, startPosition.y);
+                    }
                 }
                 break;
         }

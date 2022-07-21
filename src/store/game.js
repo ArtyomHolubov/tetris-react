@@ -10,11 +10,19 @@ class Game {
     animation = false;
     padding = 4;
     isPause = false;
+    isGameOver = false;
 
     constructor() {
-        this.currentFigure = FigureCreator.create(startPosition.x, startPosition.y);
+        this.init();
         makeAutoObservable(this);
+    }
 
+    init() {
+        this.field = [];
+        this.figures = [];
+        this.score = 0;
+
+        this.currentFigure = FigureCreator.create(startPosition.x, startPosition.y);
 
         for (let y = 0; y < fieldParams.height; y++) {
             for (let x = 0; x < fieldParams.width; x++) {
@@ -76,6 +84,10 @@ class Game {
         });
 
         this.score += 100;
+    }
+
+    checkStopGame(figure) {
+        return figure.coords.some(c => c.y === 0);
     }
 }
 

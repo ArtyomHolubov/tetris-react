@@ -1,16 +1,17 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import Game from "../store/game";
-import logo from "../logo.svg";
 
 const ScoreData = observer(() => {
     return (
         <>
             <div className="store-data">
-                {/*<img src={logo} className="App-logo" alt="logo"/>*/}
                 <code>Tetris</code>
+                {Game.isGameOver && <>
+                    <p className={'store-data__game-over'}>GAME OVER</p>
+                    <span style={{fontSize: '14px'}}>Please push ENTER to start new game</span>
+                </>}
                 <p>
-                    <br/>
                     <div>Done figures: {Game.figures.length}</div>
                     <div>Score: {Game.score}</div>
                 </p>
@@ -18,6 +19,10 @@ const ScoreData = observer(() => {
             </div>
             <style jsx>{`
               .store-data .store-data__pause {
+                color: red;
+              }
+              
+              .store-data .store-data__game-over {
                 color: red;
               }
 
