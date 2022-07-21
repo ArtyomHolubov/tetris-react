@@ -5,13 +5,16 @@ import FigureComponent from "./Figure";
 import FieldPoint from "./FieldPoint";
 import Game from "../store/game";
 import {canMove} from "../helpers/figureCheck";
-import {colors, gameSpeed, layoutParams, startPosition, step, vectors} from "../constants";
+import {colors, gameSpeed, startPosition, step, vectors} from "../constants";
 import {FigureCreator} from "../helpers/figureCreator";
 import {delay} from "../helpers/utils";
 
 let theInterval = 0;
 
-const Field = observer(() => {
+const Field = observer(({
+                            height = 20,
+                            width = 10
+                        }) => {
     console.log('render Field');
 
     useEffect(() => {
@@ -67,8 +70,7 @@ const Field = observer(() => {
                 Game.isGameOver = false;
                 Game.init();
                 runGame();
-            }
-            else Game.isPause = !Game.isPause;
+            } else Game.isPause = !Game.isPause;
         }
 
         if (Game.isPause) return;
@@ -86,10 +88,20 @@ const Field = observer(() => {
             case "ArrowDown":
                 changeCurrentFigure(vectors.DOWN);
                 break;
+            case " ":
+                dropFigure();
+                break;
+        }
+    }
+
+    const dropFigure = async () => {
+        while (!changeCurrentFigure(vectors.DOWN)) {
+            // await delay(10); //TODO there is a bug
         }
     }
 
     const changeCurrentFigure = (vector) => {
+        let isMoveOver = false;
         switch (vector) {
             case vectors.UP:
                 Game.rotateCurrentFigure();
@@ -111,28 +123,35 @@ const Field = observer(() => {
                         stopGame();
                         Game.isGameOver = true;
                     } else {
+                        isMoveOver = true;
                         Game.addFigure(Game.currentFigure);
                         const rowsForDelete = Game.checkFilledRow();
                         deleteRows(rowsForDelete);
-                        Game.currentFigure = FigureCreator.create(startPosition.x, startPosition.y);
+                        Game.currentFigure = FigureCreator.create(startPosition.x, startPosition.y, Game.nextFigure.type);
+                        Game.createNextFigure();
                     }
                 }
                 break;
         }
+
+        return isMoveOver;
     }
 
     const getFieldPointColor = p => {
         switch (p.value) {
-            case 0: return 'transparent';
-            case 1: return 'gray';
-            case 2: return 'white';
+            case 0:
+                return 'transparent';
+            case 1:
+                return 'gray';
+            case 2:
+                return 'white';
         }
     }
 
     return (
         <>
             <div className={'field-wrp'}>
-                <FigureComponent/>
+                <FigureComponent className={'figure'} figure={Game.currentFigure}/>
                 {Game.field.map(p => (
                     p.value > 0 &&
                     <FieldPoint key={p.id} id={p.id} x={p.x} y={p.y} color={getFieldPointColor(p)}/>
@@ -141,8 +160,8 @@ const Field = observer(() => {
             <style jsx>{`
               .field-wrp {
                 position: relative;
-                height: ${layoutParams.height}px;
-                width: ${layoutParams.width}px;
+                height: ${height * step}px;
+                width: ${width * step}px;
                 border: 4px solid ${colors.fieldBorderColor};
               }
 

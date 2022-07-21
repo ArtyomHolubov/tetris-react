@@ -11,6 +11,8 @@ class Game {
     padding = 4;
     isPause = false;
     isGameOver = false;
+    currentFigure = null;
+    nextFigure = null;
 
     constructor() {
         this.init();
@@ -22,6 +24,7 @@ class Game {
         this.figures = [];
         this.score = 0;
 
+        this.createNextFigure();
         this.currentFigure = FigureCreator.create(startPosition.x, startPosition.y);
 
         for (let y = 0; y < fieldParams.height; y++) {
@@ -32,7 +35,11 @@ class Game {
         }
     }
 
-    changeCurrentFigure(x, y, type) {
+    createNextFigure() {
+        this.nextFigure = FigureCreator.create(1, 2);
+    }
+
+    changeCurrentFigure(x, y) {
         const xOffset = this.currentFigure.x - x;
         const yOffset = this.currentFigure.y - y;
 

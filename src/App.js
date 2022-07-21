@@ -6,7 +6,9 @@ import SettingsField from "./components/SettingsField";
 import Checkbox from "./components/Checkbox";
 import InputNumber from "./components/InputNumber";
 import ScoreData from "./components/ScoreData";
+import FigureComponent from "./components/Figure";
 import './App.css';
+import {fieldParams} from "./constants";
 
 function App() {
     const handleToggleAnimation = () => {
@@ -26,8 +28,11 @@ function App() {
                     <Checkbox label={'Animation'} value={Game.animation} onChange={handleToggleAnimation} />
                     <InputNumber label={'Padding'} value={Game.padding} onChange={handleChangePadding} />
                 </SettingsField>
-                <Field/>
-                <SettingsField />
+                <Field height={fieldParams.height} width={fieldParams.width}/>
+                <SettingsField>
+                    <div>Next figure</div>
+                    {Game.nextFigure && <FigureComponent className={'next-figure'} figure={Game.nextFigure}/>}
+                </SettingsField>
             </div>
         </div>
     );

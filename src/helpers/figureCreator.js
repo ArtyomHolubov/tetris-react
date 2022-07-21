@@ -100,7 +100,6 @@ class Stick {
                         filled: false
                     }
                 ];
-                break;
             case 1:
                 return [
                     {
@@ -229,8 +228,9 @@ class Square {
 }
 
 export class FigureCreator {
-    static create(x, y) {
-        switch (getRandomFigureType()) {
+    static create(x, y, type) {
+        const typeValue = type || getRandomFigureType();
+        switch (typeValue) {
             case figureTypes.square:
                 return new Square(x, y);
             case figureTypes.stick:

@@ -3,11 +3,11 @@ import {observer} from "mobx-react-lite";
 import Game from "../store/game";
 import FieldPoint from "./FieldPoint";
 
-const Figure = observer(({type}) => {
+const Figure = observer(({className, figure}) => {
     return (
         <>
-            <div className={'figure-wrp'}>
-                {Game.currentFigure.coords.map(p => (
+            <div className={`${className}-wrp`}>
+                {figure.coords.map(p => (
                     <FieldPoint
                         key={Math.random()}
                         id={p.y.toString() + p.x.toString()}
