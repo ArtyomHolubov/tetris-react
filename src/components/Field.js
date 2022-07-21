@@ -20,17 +20,17 @@ const Field = observer(() => {
         document.addEventListener("keydown", move);
 
         return () => {
-            stopGame(theInterval);
+            stopGame();
             document.removeEventListener("keydown", move);
         }
     }, []);
 
     const runGame = () => theInterval = setInterval(() => changeCurrentFigure(vectors.DOWN), gameSpeed)
-    const stopGame = interval => clearInterval(interval)
+    const stopGame = () => clearInterval(theInterval)
 
     const deleteRows = async rows => {
         if (!rows.length) return;
-        stopGame(theInterval);
+        stopGame();
 
         await lightingRows(rows);
 
@@ -72,6 +72,11 @@ const Field = observer(() => {
                 break;
             case "ArrowDown":
                 changeCurrentFigure(vectors.DOWN);
+                break;
+            case "Enter":
+                if (Game.isPause) runGame();
+                else stopGame();
+                Game.isPause = !Game.isPause;
                 break;
         }
     }

@@ -6,20 +6,21 @@ import logo from "../logo.svg";
 const ScoreData = observer(() => {
     return (
         <>
-            <header className="app-header">
+            <div className="store-data">
                 {/*<img src={logo} className="App-logo" alt="logo"/>*/}
+                <code>Tetris</code>
                 <p>
-                    <code>Tetris</code>
                     <br/>
                     <div>Done figures: {Game.figures.length}</div>
                     <div>Score: {Game.score}</div>
                 </p>
-            </header>
+                <p>{Game.isPause && <div className={'store-data__pause'}>PAUSE...</div>}</p>
+            </div>
             <style jsx>{`
-              .app-header {
-                display: flex;
-                align-items: center;
+              .store-data .store-data__pause {
+                color: red;
               }
+
             `}</style>
         </>
     );

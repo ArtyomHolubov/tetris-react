@@ -9,6 +9,7 @@ class Game {
     score = 0;
     animation = false;
     padding = 4;
+    isPause = false;
 
     constructor() {
         this.currentFigure = FigureCreator.create(startPosition.x, startPosition.y);
