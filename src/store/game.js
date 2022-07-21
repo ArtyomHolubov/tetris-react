@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {FigureCreator} from "../helpers/figureCreator";
-import {canMove, checkFieldIntersection} from "../helpers/figureCheck";
 import {delay} from "../helpers/utils";
+import {GameManager} from "../helpers/GameManager";
 import {fieldParams, gameSpeed, startPosition, vectors} from "../constants";
 
 class Game {
@@ -57,7 +57,7 @@ class Game {
         const { rotateState, rotateStates, getRotateCoords } = this.currentFigure;
         const resultRotateState = rotateStates - 1 - rotateState ? rotateState + 1 : 0;
         const figureForCheck = { coords: getRotateCoords(resultRotateState) };
-        if (checkFieldIntersection(figureForCheck, vectors.UP).isCan) {
+        if (GameManager.checkFieldIntersection(figureForCheck, vectors.UP).isCan) {
             this.currentFigure.rotateState = resultRotateState;
             this.currentFigure.coords = getRotateCoords(resultRotateState);
         }
@@ -101,20 +101,21 @@ class Game {
 
     moveCurrentFigure (vector) {
         let isMoveOver = false;
+
         switch (vector) {
             case vectors.UP:
                 this.rotateCurrentFigure();
                 break;
             case vectors.LEFT:
-                if (canMove(vectors.LEFT, this.currentFigure).isCan)
+                if (GameManager.canMove(vectors.LEFT, this.currentFigure).isCan)
                     this.changeCurrentFigure(this.currentFigure.x - 1, this.currentFigure.y);
                 break;
             case vectors.RIGHT:
-                if (canMove(vectors.RIGHT, this.currentFigure).isCan)
+                if (GameManager.canMove(vectors.RIGHT, this.currentFigure).isCan)
                     this.changeCurrentFigure(this.currentFigure.x + 1, this.currentFigure.y);
                 break;
             case vectors.DOWN:
-                const can = canMove(vectors.DOWN, this.currentFigure);
+                const can = GameManager.canMove(vectors.DOWN, this.currentFigure);
                 if (can.isCan)
                     this.changeCurrentFigure(this.currentFigure.x, this.currentFigure.y + 1);
                 else if (can.shouldToStop) {

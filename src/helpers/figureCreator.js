@@ -1,6 +1,6 @@
-import {figureTypes} from "../constants";
-import {getRandomFigureType} from "./figureCheck";
 import {makeAutoObservable} from "mobx";
+import {GameManager} from "./GameManager";
+import {figureTypes} from "../constants";
 
 class Stick {
     constructor(x, y) {
@@ -229,7 +229,7 @@ class Square {
 
 export class FigureCreator {
     static create(x, y, type) {
-        const typeValue = type || getRandomFigureType();
+        const typeValue = type || GameManager.getRandomFigureType();
         switch (typeValue) {
             case figureTypes.square:
                 return new Square(x, y);
