@@ -15,7 +15,12 @@ export const fieldParams = {
 
 export const figureTypes = {
     square: 'square',
-    stick: 'stick'
+    stick: 'stick',
+    tsign: 'tsign',
+    rightL: 'rightL',
+    leftL: 'leftL',
+    rightS: 'rightS',
+    leftS: 'leftS',
 };
 
 export const startPosition = {
