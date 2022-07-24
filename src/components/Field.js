@@ -5,7 +5,6 @@ import FigureComponent from "./Figure";
 import FieldPoint from "./FieldPoint";
 import Game from "../store/game";
 import {colors, gameSpeed, step} from "../constants";
-import {GameManager} from "../helpers/GameManager";
 
 let renderCount = 1;
 
@@ -18,11 +17,11 @@ const Field = observer(({
     useEffect(() => {
         Game.run();
 
-        document.addEventListener("keydown", GameManager.keydown);
+        document.addEventListener("keydown", Game.keydown);
 
         return () => {
             Game.stop();
-            document.removeEventListener("keydown", GameManager.keydown);
+            document.removeEventListener("keydown", Game.keydown);
         }
     }, []);
 
@@ -34,6 +33,8 @@ const Field = observer(({
                 return 'gray';
             case 2:
                 return 'white';
+            default:
+                break;
         }
     }
 

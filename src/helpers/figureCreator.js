@@ -1,5 +1,4 @@
 import {makeAutoObservable} from "mobx";
-import {GameManager} from "./GameManager";
 import {figureTypes} from "../constants";
 
 class Figure {
@@ -12,10 +11,9 @@ class Figure {
     rotateState = 0;
     rotateStates = 1;
 
-    constructor({type, matrix, center, x, y, rotateStates}) {
+    constructor({type, matrix, x, y, rotateStates}) {
         this.type = type;
         this.matrix = matrix;
-        this.center = center;
         this.x = x;
         this.y = y;
         this.rotateStates = rotateStates;
@@ -26,136 +24,13 @@ class Figure {
     }
 
     getRotateCoords(rotateState) {
-        return FigureCreator.getCoordsFromMatrix(this.matrix, rotateState, this.x, this.y, this.center);
-    }
-}
-
-export class FigureCreator {
-    static create(x, y, type) {
-        const typeValue = type || GameManager.getRandomFigureType();
-        // const typeValue = figureTypes.rightL;
-        switch (typeValue) {
-            case figureTypes.square:
-                return new Figure({
-                    type: figureTypes.square,
-                    matrix: [
-                        [1, 1],
-                        [1, 1]
-                    ],
-                    center: {
-                        x: 0,
-                        y: 0
-                    },
-                    x,
-                    y,
-                    rotateStates: 1
-                });
-            case figureTypes.stick:
-                return new Figure({
-                    type: figureTypes.stick,
-                    matrix: [
-                        [0, 1],
-                        [0, 1],
-                        [0, 1],
-                        [0, 1]
-                    ],
-                    center: {
-                        x: 1,
-                        y: 1
-                    },
-                    x,
-                    y,
-                    rotateStates: 2
-                });
-            case figureTypes.tsign:
-                return new Figure({
-                    type: figureTypes.tsign,
-                    matrix: [
-                        [0, 1, 0],
-                        [1, 1, 1]
-                    ],
-                    center: {
-                        x: 1,
-                        y: 1
-                    },
-                    x,
-                    y,
-                    rotateStates: 4
-                });
-            case figureTypes.rightL:
-                return new Figure({
-                    type: figureTypes.rightL,
-                    matrix: [
-                        [0, 1, 0],
-                        [0, 1, 0],
-                        [0, 1, 1]
-                    ],
-                    center: {
-                        x: 1,
-                        y: 1
-                    },
-                    x,
-                    y,
-                    rotateStates: 4
-                });
-            case figureTypes.leftL:
-                return new Figure({
-                    type: figureTypes.leftL,
-                    matrix: [
-                        [0, 1, 0],
-                        [0, 1, 0],
-                        [1, 1, 0]
-                    ],
-                    center: {
-                        x: 1,
-                        y: 1
-                    },
-                    x,
-                    y,
-                    rotateStates: 4
-                });
-            case figureTypes.rightS:
-                return new Figure({
-                    type: figureTypes.rightS,
-                    matrix: [
-                        [1, 0],
-                        [1, 1],
-                        [0, 1]
-                    ],
-                    center: {
-                        x: 1,
-                        y: 1
-                    },
-                    x,
-                    y,
-                    rotateStates: 2
-                });
-            case figureTypes.leftS:
-                return new Figure({
-                    type: figureTypes.leftS,
-                    matrix: [
-                        [0, 1],
-                        [1, 1],
-                        [1, 0]
-                    ],
-                    center: {
-                        x: 1,
-                        y: 1
-                    },
-                    x,
-                    y,
-                    rotateStates: 2
-                });
-        }
-    }
-
-    static getCoordsFromMatrix(matrix, rotateState, x, y, center) {
         const rotateStatesCoords = [];
+        const { x, y, center, matrix } = this;
         let resultMatrix = matrix;
 
         const rotates = new Array(rotateState);
         for (let i = rotates.length - 1; i >= 0; i--) {
-            resultMatrix = rotateRight90(resultMatrix);
+            resultMatrix = rotateMatrixRight90(resultMatrix);
         }
 
         for (let i = resultMatrix.length - 1; i >= 0; i--) {
@@ -172,7 +47,108 @@ export class FigureCreator {
     }
 }
 
-function rotateRight90(matrix) {
+export class FigureCreator {
+    static create(x, y, type) {
+        const typeValue = type || this.getRandomFigureType();
+        // const typeValue = figureTypes.rightL;
+        switch (typeValue) {
+            case figureTypes.square:
+                return new Figure({
+                    type: figureTypes.square,
+                    matrix: [
+                        [1, 1],
+                        [1, 1]
+                    ],
+                    x,
+                    y,
+                    rotateStates: 1
+                });
+            case figureTypes.stick:
+                return new Figure({
+                    type: figureTypes.stick,
+                    matrix: [
+                        [0, 1, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 1, 0, 0]
+                    ],
+                    x,
+                    y,
+                    rotateStates: 2
+                });
+            case figureTypes.tsign:
+                return new Figure({
+                    type: figureTypes.tsign,
+                    matrix: [
+                        [0, 0, 0],
+                        [0, 1, 0],
+                        [1, 1, 1]
+                    ],
+                    x,
+                    y,
+                    rotateStates: 4
+                });
+            case figureTypes.rightL:
+                return new Figure({
+                    type: figureTypes.rightL,
+                    matrix: [
+                        [0, 1, 0],
+                        [0, 1, 0],
+                        [0, 1, 1]
+                    ],
+                    x,
+                    y,
+                    rotateStates: 4
+                });
+            case figureTypes.leftL:
+                return new Figure({
+                    type: figureTypes.leftL,
+                    matrix: [
+                        [0, 1, 0],
+                        [0, 1, 0],
+                        [1, 1, 0]
+                    ],
+                    x,
+                    y,
+                    rotateStates: 4
+                });
+            case figureTypes.rightS:
+                return new Figure({
+                    type: figureTypes.rightS,
+                    matrix: [
+                        [0, 1, 0],
+                        [0, 1, 1],
+                        [0, 0, 1]
+                    ],
+                    x,
+                    y,
+                    rotateStates: 2
+                });
+            case figureTypes.leftS:
+                return new Figure({
+                    type: figureTypes.leftS,
+                    matrix: [
+                        [0, 0, 1],
+                        [0, 1, 1],
+                        [0, 1, 0]
+                    ],
+                    x,
+                    y,
+                    rotateStates: 2
+                });
+            default:
+                break;
+        }
+    }
+
+    static getRandomFigureType () {
+        const types = Object.values(figureTypes);
+        const index = Math.floor(Math.random() * types.length);
+        return types[index];
+    }
+}
+
+function rotateMatrixRight90(matrix) {
     let result = [];
     for (let i = matrix.length - 1; i >= 0; i--) {
         for (let j = 0; j < matrix[i].length; j++) {

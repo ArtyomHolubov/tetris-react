@@ -1,7 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import {FigureCreator} from "../helpers/figureCreator";
 import {delay} from "../helpers/utils";
-import {GameManager} from "../helpers/GameManager";
 import {fieldParams, gameSpeed, startPosition, vectors} from "../constants";
 
 class Game {
@@ -17,6 +16,7 @@ class Game {
     interval = 0;
 
     constructor() {
+        this.keydown = this.keydown.bind(this);
         this.init();
         makeAutoObservable(this);
     }
@@ -35,6 +35,67 @@ class Game {
                 this.field.push({id, x, y, value: 0});
             }
         }
+    }
+
+    keydown (e) {
+        if (e.key === 'Enter') {
+            if (this.isPause) this.run();
+            else this.stop();
+            if (this.isGameOver) {
+                this.isGameOver = false;
+                this.init();
+                this.run();
+            } else this.isPause = !this.isPause;
+        }
+
+        if (this.isPause) return;
+
+        switch (e.key) {
+            case "ArrowLeft":  // если нажата клавиша влево
+                this.moveCurrentFigure(vectors.LEFT);
+                break;
+            case "ArrowUp":   // если нажата клавиша вверх
+                this.moveCurrentFigure(vectors.UP);
+                break;
+            case "ArrowRight":   // если нажата клавиша вправо
+                this.moveCurrentFigure(vectors.RIGHT);
+                break;
+            case "ArrowDown":
+                this.moveCurrentFigure(vectors.DOWN);
+                break;
+            case " ":
+                this.dropFigure();
+                break;
+            default:
+                break;
+        }
+    }
+
+    canMove (vector, figure) {
+        const {field} = this;
+        let points = [];
+        let shouldToStop = false;
+
+        switch (vector) {
+            case vectors.LEFT:
+                points = field.filter(p => figure.coords.some(c => c.filled && p.x === c.x - 1 && c.y === p.y && !p.value));
+                break;
+            case vectors.RIGHT:
+                points = field.filter(p => figure.coords.some(c => c.filled && p.x === c.x + 1 && c.y === p.y && !p.value));
+                break;
+            case vectors.DOWN:
+                points = field.filter(p => figure.coords.some(c => c.filled && p.x === c.x && c.y + 1 === p.y && !p.value));
+                if (points.length !== figure.coords.filter(c => c.filled).length)
+                    shouldToStop = true;
+                break;
+            case vectors.UP:
+                points = field.filter(p => figure.coords.some(c => c.filled && p.x === c.x && c.y === p.y && !p.value));
+                break;
+            default:
+                break;
+        }
+
+        return {isCan: points.length === figure.coords.filter(c => c.filled).length, shouldToStop: shouldToStop};
     }
 
     createNextFigure() {
@@ -57,7 +118,7 @@ class Game {
         const { rotateState, rotateStates, getRotateCoords } = this.currentFigure;
         const resultRotateState = rotateStates - 1 - rotateState ? rotateState + 1 : 0;
         const figureForCheck = { coords: getRotateCoords(resultRotateState) };
-        if (GameManager.checkFieldIntersection(figureForCheck, vectors.UP).isCan) {
+        if (this.canMove(vectors.UP, figureForCheck).isCan) {
             this.currentFigure.rotateState = resultRotateState;
             this.currentFigure.coords = getRotateCoords(resultRotateState);
         }
@@ -107,15 +168,15 @@ class Game {
                 this.rotateCurrentFigure();
                 break;
             case vectors.LEFT:
-                if (GameManager.canMove(vectors.LEFT, this.currentFigure).isCan)
+                if (this.canMove(vectors.LEFT, this.currentFigure).isCan)
                     this.changeCurrentFigure(this.currentFigure.x - 1, this.currentFigure.y);
                 break;
             case vectors.RIGHT:
-                if (GameManager.canMove(vectors.RIGHT, this.currentFigure).isCan)
+                if (this.canMove(vectors.RIGHT, this.currentFigure).isCan)
                     this.changeCurrentFigure(this.currentFigure.x + 1, this.currentFigure.y);
                 break;
             case vectors.DOWN:
-                const can = GameManager.canMove(vectors.DOWN, this.currentFigure);
+                const can = this.canMove(vectors.DOWN, this.currentFigure);
                 if (can.isCan)
                     this.changeCurrentFigure(this.currentFigure.x, this.currentFigure.y + 1);
                 else if (can.shouldToStop) {
@@ -131,6 +192,8 @@ class Game {
                         this.createNextFigure();
                     }
                 }
+                break;
+            default:
                 break;
         }
 
