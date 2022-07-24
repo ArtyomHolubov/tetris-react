@@ -29,7 +29,7 @@ function App() {
             <div className={'game-wrp'}>
                 <SettingsField>
                     <ScoreData />
-                    <Checkbox label={'animation'} value={Game.animation} onChange={handleToggleAnimation} />
+                    {/*<Checkbox label={'animation'} value={Game.animation} onChange={handleToggleAnimation} />*/}
                     <Checkbox label={'grayscale'} value={Game.grayscale} onChange={handleToggleGrayscale} />
                     <InputNumber label={'Padding'} value={Game.padding} onChange={handleChangePadding} />
                 </SettingsField>

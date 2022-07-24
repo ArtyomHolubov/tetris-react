@@ -29,6 +29,10 @@ const Field = observer(({
 
     }, [Game.grayscale]);
 
+    useEffect(() => {
+        if (Game.reload) document.location.reload(); // TODO this reload related bug with Game.dropFigure()
+    }, [Game.reload]);
+
     const getFieldPointColor = p => {
         switch (p.value) {
             case 0:

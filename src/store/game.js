@@ -44,6 +44,7 @@ class Game {
             else this.stop();
             if (this.isGameOver) {
                 this.isGameOver = false;
+                this.reload = true; // TODO this reload related bug with Game.dropFigure()
                 this.init();
                 this.run();
             } else this.isPause = !this.isPause;
@@ -202,9 +203,18 @@ class Game {
         return isMoveOver;
     }
 
+    // TODO not using now
+    async animationDown() {
+        const animationSteps = 500;
+        for (let i = 0; i < animationSteps; i++) {
+            this.changeCurrentFigure(this.currentFigure.x, this.currentFigure.y + 1 / animationSteps);
+            await delay(gameSpeed / animationSteps);
+        }
+    }
+
     async dropFigure() {
         while (!this.moveCurrentFigure(vectors.DOWN)) {
-            // await delay(10); //TODO there is a bug
+            await delay(10); //TODO there is a bug
         }
     }
 
