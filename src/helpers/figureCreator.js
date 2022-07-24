@@ -11,11 +11,12 @@ class Figure {
     rotateState = 0;
     rotateStates = 1;
 
-    constructor({type, matrix, x, y, rotateStates}) {
+    constructor({type, matrix, x, y, color, rotateStates}) {
         this.type = type;
         this.matrix = matrix;
         this.x = x;
         this.y = y;
+        this.color = color;
         this.rotateStates = rotateStates;
 
         this.getRotateCoords = this.getRotateCoords.bind(this);
@@ -61,6 +62,7 @@ export class FigureCreator {
                     ],
                     x,
                     y,
+                    color: 'blue',
                     rotateStates: 1
                 });
             case figureTypes.stick:
@@ -74,6 +76,7 @@ export class FigureCreator {
                     ],
                     x,
                     y,
+                    color: 'red',
                     rotateStates: 2
                 });
             case figureTypes.tsign:
@@ -86,6 +89,7 @@ export class FigureCreator {
                     ],
                     x,
                     y,
+                    color: 'yellow',
                     rotateStates: 4
                 });
             case figureTypes.rightL:
@@ -98,6 +102,7 @@ export class FigureCreator {
                     ],
                     x,
                     y,
+                    color: 'pink',
                     rotateStates: 4
                 });
             case figureTypes.leftL:
@@ -110,6 +115,7 @@ export class FigureCreator {
                     ],
                     x,
                     y,
+                    color: 'orange',
                     rotateStates: 4
                 });
             case figureTypes.rightS:
@@ -122,6 +128,7 @@ export class FigureCreator {
                     ],
                     x,
                     y,
+                    color: 'green',
                     rotateStates: 2
                 });
             case figureTypes.leftS:
@@ -134,6 +141,7 @@ export class FigureCreator {
                     ],
                     x,
                     y,
+                    color: 'aqua',
                     rotateStates: 2
                 });
             default:

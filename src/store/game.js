@@ -8,7 +8,8 @@ class Game {
     figures = [];
     score = 0;
     animation = false;
-    padding = 4;
+    grayscale = false;
+    padding = 2;
     isPause = false;
     isGameOver = false;
     currentFigure = null;
@@ -37,7 +38,7 @@ class Game {
         }
     }
 
-    keydown (e) {
+    keydown(e) {
         if (e.key === 'Enter') {
             if (this.isPause) this.run();
             else this.stop();
@@ -71,7 +72,7 @@ class Game {
         }
     }
 
-    canMove (vector, figure) {
+    canMove(vector, figure) {
         const {field} = this;
         let points = [];
         let shouldToStop = false;
@@ -115,9 +116,9 @@ class Game {
     }
 
     async rotateCurrentFigure() {
-        const { rotateState, rotateStates, getRotateCoords } = this.currentFigure;
+        const {rotateState, rotateStates, getRotateCoords} = this.currentFigure;
         const resultRotateState = rotateStates - 1 - rotateState ? rotateState + 1 : 0;
-        const figureForCheck = { coords: getRotateCoords(resultRotateState) };
+        const figureForCheck = {coords: getRotateCoords(resultRotateState)};
         if (this.canMove(vectors.UP, figureForCheck).isCan) {
             this.currentFigure.rotateState = resultRotateState;
             this.currentFigure.coords = getRotateCoords(resultRotateState);
@@ -127,7 +128,10 @@ class Game {
     addFigure(figure) {
         this.figures.push({...figure});
         const points = this.field.filter(p => figure.coords.some(c => p.x === c.x && c.y === p.y && c.filled));
-        points.forEach(p => p.value = 1);
+        points.forEach(p => {
+            p.value = 1;
+            p.color = figure.color;
+        });
     }
 
     checkFilledRow() {
@@ -152,15 +156,13 @@ class Game {
                 p.value = upperPoint.value;
             }
         });
-
-        this.score += 100;
     }
 
     checkStopGame(figure) {
         return figure.coords.some(c => c.y === 0);
     }
 
-    moveCurrentFigure (vector) {
+    moveCurrentFigure(vector) {
         let isMoveOver = false;
 
         switch (vector) {
@@ -200,22 +202,22 @@ class Game {
         return isMoveOver;
     }
 
-    async dropFigure ()  {
+    async dropFigure() {
         while (!this.moveCurrentFigure(vectors.DOWN)) {
             // await delay(10); //TODO there is a bug
         }
     }
 
-    async lightingRows (rows) {
+    async lightingRows(rows) {
         for (let i = 0; i < 2; i++) {
             this.changeRowsValue(rows, 2);
             await delay(100);
-            this.changeRowsValue(rows, 1);
+            this.changeRowsValue(rows, 3);
             await delay(100);
         }
     }
 
-    changeRowsValue (rows, value) {
+    changeRowsValue(rows, value) {
         rows.forEach(row => {
             this.field.forEach(f => {
                 if (f.y === row)
@@ -224,21 +226,42 @@ class Game {
         });
     }
 
-    async deleteRows (rows) {
+    async deleteRows(rows) {
         if (!rows.length) return;
         this.stop();
 
         await this.lightingRows(rows);
 
+        this.addedScoresByRows(rows.length);
+
         rows.forEach(row => this.deleteRow(row));
         if (!this.isPause) this.run();
     }
 
-    run () {
+    addedScoresByRows(rowsCount) {
+        switch (rowsCount) {
+            case 1:
+                this.score += 100;
+                break;
+            case 2:
+                this.score += 300;
+                break;
+            case 3:
+                this.score += 700;
+                break;
+            case 4:
+                this.score += 1500;
+                break;
+            default:
+                break;
+        }
+    }
+
+    run() {
         this.interval = setInterval(() => this.moveCurrentFigure(vectors.DOWN), gameSpeed)
     }
 
-    stop () {
+    stop() {
         clearInterval(this.interval)
     }
 }

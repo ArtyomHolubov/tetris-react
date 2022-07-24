@@ -15,6 +15,10 @@ function App() {
         Game.animation = !Game.animation;
     };
 
+    const handleToggleGrayscale = () => {
+        Game.grayscale = !Game.grayscale;
+    };
+
     const handleChangePadding = (evt) => {
         Game.padding = parseInt(evt.target.value) || 0;
     }
@@ -25,7 +29,8 @@ function App() {
             <div className={'game-wrp'}>
                 <SettingsField>
                     <ScoreData />
-                    <Checkbox label={'Animation'} value={Game.animation} onChange={handleToggleAnimation} />
+                    <Checkbox label={'animation'} value={Game.animation} onChange={handleToggleAnimation} />
+                    <Checkbox label={'grayscale'} value={Game.grayscale} onChange={handleToggleGrayscale} />
                     <InputNumber label={'Padding'} value={Game.padding} onChange={handleChangePadding} />
                 </SettingsField>
                 <Field height={fieldParams.height} width={fieldParams.width}/>

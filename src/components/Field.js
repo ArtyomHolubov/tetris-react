@@ -25,14 +25,20 @@ const Field = observer(({
         }
     }, []);
 
+    useEffect(() => {
+
+    }, [Game.grayscale]);
+
     const getFieldPointColor = p => {
         switch (p.value) {
             case 0:
                 return 'transparent';
             case 1:
-                return 'gray';
+                return p.color;
             case 2:
                 return 'white';
+            case 3:
+                return 'black';
             default:
                 break;
         }
@@ -44,7 +50,7 @@ const Field = observer(({
                 <FigureComponent className={'figure'} figure={Game.currentFigure}/>
                 {Game.field.map(p => (
                     p.value > 0 &&
-                    <FieldPoint key={p.id} id={p.id} x={p.x} y={p.y} color={getFieldPointColor(p)}/>
+                    <FieldPoint key={p.id} id={p.id} x={p.x} y={p.y} color={getFieldPointColor(p)} isStopped={p.value === 1}/>
                 ))}
             </div>
             <style jsx>{`
