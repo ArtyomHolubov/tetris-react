@@ -14,12 +14,19 @@ const ScoreData = observer(() => {
                 <p>
                     <div>Done figures: {Game.figures.length}</div>
                     <div>Score: {Game.score}</div>
+                    <div>Level: {Game.level?.id?.toString()}</div>
+                    <div>Lines: {Game.linesCount}</div>
                 </p>
-                <p>{Game.isPause && <div className={'store-data__pause'}>PAUSE...</div>}</p>
+                <p>{!Game.isPause && <div className={'store-data__pause--inactive'}>Press ENTER to Pause the game</div>}</p>
+                <p>{Game.isPause && <div className={'store-data__pause--active'}>PAUSE...</div>}</p>
             </div>
             <style jsx>{`
-              .store-data .store-data__pause {
+              .store-data .store-data__pause--active {
                 color: red;
+              }
+              
+              .store-data .store-data__pause--inactive {
+                color: gray;
               }
               
               .store-data .store-data__game-over {

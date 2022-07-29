@@ -4,16 +4,12 @@ import {runInAction} from "mobx";
 import FigureComponent from "./Figure";
 import FieldPoint from "./FieldPoint";
 import Game from "../store/game";
-import {colors, gameSpeed, step} from "../constants";
-
-let renderCount = 1;
+import {colors, step} from "../constants";
 
 const Field = observer(({
                             height = 20,
                             width = 10
                         }) => {
-    console.log('render Field', renderCount++);
-
     useEffect(() => {
         Game.run();
 
@@ -87,7 +83,7 @@ const Field = observer(({
               }
 
               .roll-out {
-                animation: ${gameSpeed}ms linear rollout;
+                animation: ${Game.level.speed}ms linear rollout;
               }
             `}</style>
         </>

@@ -1,12 +1,14 @@
 import {makeAutoObservable} from "mobx";
 import {FigureCreator} from "../helpers/figureCreator";
 import {delay} from "../helpers/utils";
-import {fieldParams, gameSpeed, startPosition, vectors} from "../constants";
+import {fieldParams, gameLevels, startPosition, vectors} from "../constants";
 
 class Game {
     field = [];
     figures = [];
     score = 0;
+    level = gameLevels[0];
+    linesCount = 0;
     animation = false;
     grayscale = false;
     padding = 2;
@@ -191,6 +193,7 @@ class Game {
                         this.addFigure(this.currentFigure);
                         const rowsForDelete = this.checkFilledRow();
                         this.deleteRows(rowsForDelete);
+                        this.updateLevel(rowsForDelete);
                         this.currentFigure = FigureCreator.create(startPosition.x, startPosition.y, this.nextFigure.type);
                         this.createNextFigure();
                     }
@@ -203,12 +206,17 @@ class Game {
         return isMoveOver;
     }
 
+    updateLevel(rowsForDelete) {
+        this.linesCount += rowsForDelete.length;
+        this.level = gameLevels[Math.floor(this.linesCount / 8)]
+    }
+
     // TODO not using now
     async animationDown() {
         const animationSteps = 500;
         for (let i = 0; i < animationSteps; i++) {
             this.changeCurrentFigure(this.currentFigure.x, this.currentFigure.y + 1 / animationSteps);
-            await delay(gameSpeed / animationSteps);
+            await delay(this.level.speed / animationSteps);
         }
     }
 
@@ -268,7 +276,7 @@ class Game {
     }
 
     run() {
-        this.interval = setInterval(() => this.moveCurrentFigure(vectors.DOWN), gameSpeed)
+        this.interval = setInterval(() => this.moveCurrentFigure(vectors.DOWN), this.level.speed)
     }
 
     stop() {
