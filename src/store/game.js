@@ -1,7 +1,8 @@
 import {makeAutoObservable} from "mobx";
 import {FigureCreator} from "../helpers/figureCreator";
-import {delay} from "../helpers/utils";
+import {delay, uuidv4} from "../helpers/utils";
 import {fieldParams, gameLevels, startPosition, vectors} from "../constants";
+import {addRecord, getRecords} from "../firebase";
 
 class Game {
     field = [];
@@ -18,6 +19,7 @@ class Game {
     nextFigure = null;
     interval = 0;
     prevKey = null;
+    records = [];
 
     constructor() {
         this.keydown = this.keydown.bind(this);
@@ -39,6 +41,8 @@ class Game {
                 this.field.push({id, x, y, value: 0});
             }
         }
+
+        (async () => this.records = await getRecords())();
     }
 
     keydown(e) {
@@ -193,6 +197,13 @@ class Game {
                     if (this.checkStopGame(this.currentFigure)) {
                         this.stop();
                         this.isGameOver = true;
+
+                        //TODO add record
+                        addRecord({
+                            name: uuidv4(),
+                            score: this.score,
+                            date: new Date()
+                        })
                     } else {
                         isMoveOver = true;
                         this.addFigure(this.currentFigure);

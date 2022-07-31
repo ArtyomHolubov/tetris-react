@@ -28,15 +28,30 @@ function App() {
             <br/>
             <div className={'game-wrp'}>
                 <SettingsField>
-                    <ScoreData />
+                    <ScoreData/>
                     {/*<Checkbox label={'animation'} value={Game.animation} onChange={handleToggleAnimation} />*/}
-                    <Checkbox label={'grayscale'} value={Game.grayscale} onChange={handleToggleGrayscale} />
-                    <InputNumber label={'Padding'} value={Game.padding} onChange={handleChangePadding} />
+                    <Checkbox label={'grayscale'} value={Game.grayscale} onChange={handleToggleGrayscale}/>
+                    <InputNumber label={'Padding'} value={Game.padding} onChange={handleChangePadding}/>
                 </SettingsField>
                 <Field height={fieldParams.height} width={fieldParams.width}/>
                 <SettingsField>
                     <div>Next figure</div>
                     {Game.nextFigure && <FigureComponent className={'next-figure'} figure={Game.nextFigure}/>}
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <h4>Records</h4>
+                    <div className={'records'}>
+                        {Game.records.map(record => (
+                            <div className={'record'}>
+                                <div className={'record__name'}>{record.name}</div>
+                                <div className={'record__score'}>: {record.score}</div>
+                            </div>
+                        ))}
+                    </div>
                 </SettingsField>
             </div>
         </div>
