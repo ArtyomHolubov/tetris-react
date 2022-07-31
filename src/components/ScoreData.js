@@ -18,7 +18,7 @@ const ScoreData = observer(() => {
                     <div>Lines: {Game.linesCount}</div>
                 </p>
                 <p>{!Game.isPause && <div className={'store-data__pause--inactive'}>Press ENTER to Pause the game</div>}</p>
-                <p>{Game.isPause && <div className={'store-data__pause--active'}>PAUSE...</div>}</p>
+                <p>{Game.isPause && <div className={'store-data__pause--active'}>Pause. Press ENTER to Continue the game</div>}</p>
             </div>
             <style jsx>{`
               .store-data .store-data__pause--active {

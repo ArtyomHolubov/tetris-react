@@ -17,6 +17,7 @@ class Game {
     currentFigure = null;
     nextFigure = null;
     interval = 0;
+    prevKey = null;
 
     constructor() {
         this.keydown = this.keydown.bind(this);
@@ -54,6 +55,8 @@ class Game {
 
         if (this.isPause) return;
 
+        if (this.prevKey === e.key && e.key === ' ') return;
+
         switch (e.key) {
             case "ArrowLeft":  // если нажата клавиша влево
                 this.moveCurrentFigure(vectors.LEFT);
@@ -73,6 +76,8 @@ class Game {
             default:
                 break;
         }
+
+        this.prevKey = e.key;
     }
 
     canMove(vector, figure) {
@@ -203,12 +208,18 @@ class Game {
                 break;
         }
 
+        this.prevKey = null;
         return isMoveOver;
     }
 
     updateLevel(rowsForDelete) {
         this.linesCount += rowsForDelete.length;
-        this.level = gameLevels[Math.floor(this.linesCount / 8)]
+        const level = gameLevels[Math.floor(this.linesCount / 8)];
+        if (level.id && level.id !== this.level.id) {
+            this.stop();
+            this.level = level;
+            this.run();
+        }
     }
 
     // TODO not using now
@@ -246,14 +257,12 @@ class Game {
 
     async deleteRows(rows) {
         if (!rows.length) return;
-        this.stop();
 
         await this.lightingRows(rows);
 
         this.addedScoresByRows(rows.length);
 
         rows.forEach(row => this.deleteRow(row));
-        if (!this.isPause) this.run();
     }
 
     addedScoresByRows(rowsCount) {
