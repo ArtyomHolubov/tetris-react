@@ -12,20 +12,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-.records {
-  max-height: 500px;
-  overflow: hidden;
-}
-
-.record {
-  display: flex;
-  font-size: 16px;
-}
-
-.records .record .record__name {
-  width: 190px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}

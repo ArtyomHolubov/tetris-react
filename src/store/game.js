@@ -1,8 +1,8 @@
 import {makeAutoObservable} from "mobx";
 import {FigureCreator} from "../helpers/figureCreator";
-import {delay, uuidv4} from "../helpers/utils";
+import {delay} from "../helpers/utils";
 import {fieldParams, gameLevels, startPosition, vectors} from "../constants";
-import {addRecord, getRecords} from "../firebase";
+import {getRecords} from "../firebase";
 
 class Game {
     field = [];
@@ -15,6 +15,7 @@ class Game {
     padding = 2;
     isPause = false;
     isGameOver = false;
+    isSetScore = false;
     currentFigure = null;
     nextFigure = null;
     interval = 0;
@@ -198,12 +199,8 @@ class Game {
                         this.stop();
                         this.isGameOver = true;
 
-                        //TODO add record
-                        addRecord({
-                            name: uuidv4(),
-                            score: this.score,
-                            date: new Date()
-                        })
+                        if (this.score)
+                            this.isSetScore = true;
                     } else {
                         isMoveOver = true;
                         this.addFigure(this.currentFigure);
@@ -243,8 +240,13 @@ class Game {
     }
 
     async dropFigure() {
-        while (!this.moveCurrentFigure(vectors.DOWN)) {
-            await delay(10); //TODO there is a bug
+        if (this.isGameOver) return;
+
+        // fix for bug with drop to next figure
+        const figure = this.currentFigure;
+
+        while (!this.moveCurrentFigure(vectors.DOWN) && figure === this.currentFigure) {
+            await delay(10);
         }
     }
 

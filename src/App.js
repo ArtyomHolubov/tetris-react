@@ -7,6 +7,9 @@ import Checkbox from "./components/Checkbox";
 import InputNumber from "./components/InputNumber";
 import ScoreData from "./components/ScoreData";
 import FigureComponent from "./components/Figure";
+import ModalWindow from "./components/ModalWindow";
+import SetScoreForm from "./components/setScoreForm";
+import Records from "./components/records";
 import './App.css';
 import {fieldParams} from "./constants";
 
@@ -24,37 +27,32 @@ function App() {
     }
 
     return (
-        <div className="App">
-            <br/>
-            <div className={'game-wrp'}>
-                <SettingsField>
-                    <ScoreData/>
-                    {/*<Checkbox label={'animation'} value={Game.animation} onChange={handleToggleAnimation} />*/}
-                    <Checkbox label={'grayscale'} value={Game.grayscale} onChange={handleToggleGrayscale}/>
-                    <InputNumber label={'Padding'} value={Game.padding} onChange={handleChangePadding}/>
-                </SettingsField>
-                <Field height={fieldParams.height} width={fieldParams.width}/>
-                <SettingsField>
-                    <div>Next figure</div>
-                    {Game.nextFigure && <FigureComponent className={'next-figure'} figure={Game.nextFigure}/>}
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <h4>Records</h4>
-                    <div className={'records'}>
-                        {Game.records.map(record => (
-                            <div className={'record'}>
-                                <div className={'record__name'}>{record.name}</div>
-                                <div className={'record__score'}>: {record.score}</div>
-                            </div>
-                        ))}
-                    </div>
-                </SettingsField>
+        <>
+            {Game.isSetScore && <ModalWindow><SetScoreForm /></ModalWindow>}
+            <div className="App">
+                <br/>
+                <div className={'game-wrp'}>
+                    <SettingsField>
+                        <ScoreData/>
+                        {/*<Checkbox label={'animation'} value={Game.animation} onChange={handleToggleAnimation} />*/}
+                        <Checkbox label={'grayscale'} value={Game.grayscale} onChange={handleToggleGrayscale}/>
+                        <InputNumber label={'Padding'} value={Game.padding} onChange={handleChangePadding}/>
+                    </SettingsField>
+                    <Field height={fieldParams.height} width={fieldParams.width}/>
+                    <SettingsField>
+                        <div>Next figure</div>
+                        {Game.nextFigure && <FigureComponent className={'next-figure'} figure={Game.nextFigure}/>}
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <Records records={Game.records}/>
+                    </SettingsField>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 
