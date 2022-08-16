@@ -8,7 +8,7 @@ function Records({isShowDate, records}) {
                 <h4>Records</h4>
                 <div className={'records'}>
                     {records.map(record => (
-                        <div className={'record'}>
+                        <div className={'record'} key={record.id}>
                             <div className={'record__name'}>{record.name}</div>
                             <div className={'record__score'}>: {record.score}</div>
                             {isShowDate && <div className={'record__date'}>{record.date.toDate().toDateString()}</div>}

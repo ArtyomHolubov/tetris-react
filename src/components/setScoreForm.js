@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {observer} from "mobx-react-lite";
-import {addRecord} from "../firebase";
+import {addRecord, getRecords} from "../firebase";
 
 import Game from "../store/game";
 
@@ -15,13 +15,19 @@ const SetScoreForm = observer(() => {
     };
 
     const handleConfirm = async () => {
-        await addRecord({
+        const existRecord = Game.records.find(r => r.name === inputValue);
+        const record = {
             name: inputValue,
             score: Game.score,
             date: new Date()
-        });
+        }
+
+        if (existRecord) record.id = existRecord.id;
+
+        await addRecord(record);
 
         Game.isSetScore = false;
+        Game.records = await getRecords();
     };
 
     const handleCancel = () => {
@@ -35,11 +41,15 @@ const SetScoreForm = observer(() => {
                     <div className="set-score-form-wrp__score__value">Score: {Game.score}</div>
                 </div>
                 <div className="set-score-form-wrp__input">
-                    <input type="text" placeholder={'Enter name...'} max={20} value={inputValue} onChange={handleChangeName}/>
+                    <input type="text" placeholder={'Enter name...'} max={20} value={inputValue} autoFocus
+                           onChange={handleChangeName} />
                 </div>
-                <Records records={Game.records} isShowDate />
+                <Records records={Game.records} isShowDate/>
                 <div className="set-score-form-wrp__buttons">
-                    <div className={`set-score-form-wrp__buttons--confirm ${!inputValue.length ? 'set-score-form-wrp__buttons--confirm--disabled' : ''}`} onClick={handleConfirm}>Save</div>
+                    <div
+                        className={`set-score-form-wrp__buttons--confirm ${!inputValue.length ? 'set-score-form-wrp__buttons--confirm--disabled' : ''}`}
+                        onClick={handleConfirm}>Save
+                    </div>
                     <div className={"set-score-form-wrp__buttons--cancel"} onClick={handleCancel}>Cancel</div>
                 </div>
             </div>
@@ -80,7 +90,7 @@ const SetScoreForm = observer(() => {
                 padding: ${padding * 2}px;
                 color: white;
               }
-              
+
               .set-score-form-wrp__buttons--confirm--disabled {
                 pointer-events: none;
                 background-color: ${colors.fieldBorderColor};
