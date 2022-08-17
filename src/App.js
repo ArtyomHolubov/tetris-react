@@ -10,10 +10,13 @@ import FigureComponent from "./components/Figure";
 import ModalWindow from "./components/ModalWindow";
 import SetScoreForm from "./components/setScoreForm";
 import Records from "./components/records";
+import {devices, useDevice} from "./hooks/useDevice";
 import './App.css';
 import {fieldParams} from "./constants";
 
 function App() {
+    const device = useDevice();
+
     const handleToggleAnimation = () => {
         Game.animation = !Game.animation;
     };
@@ -32,14 +35,14 @@ function App() {
             <div className="App">
                 <br/>
                 <div className={'game-wrp'}>
-                    <SettingsField>
+                    {device === devices.computer && <SettingsField>
                         <ScoreData/>
                         {/*<Checkbox label={'animation'} value={Game.animation} onChange={handleToggleAnimation} />*/}
                         <Checkbox label={'grayscale'} value={Game.grayscale} onChange={handleToggleGrayscale}/>
                         <InputNumber label={'Padding'} value={Game.padding} onChange={handleChangePadding}/>
-                    </SettingsField>
+                    </SettingsField>}
                     <Field height={fieldParams.height} width={fieldParams.width}/>
-                    <SettingsField>
+                    {device === devices.computer && <SettingsField>
                         <div>Next figure</div>
                         {Game.nextFigure && <FigureComponent className={'next-figure'} figure={Game.nextFigure}/>}
                         <br/>
@@ -49,8 +52,11 @@ function App() {
                         <br/>
                         <br/>
                         <Records records={Game.records}/>
-                    </SettingsField>
+                    </SettingsField>}
                 </div>
+                {device === devices.mobile && <div className="mobile-controls">
+                    controls
+                </div>}
             </div>
         </>
     );
